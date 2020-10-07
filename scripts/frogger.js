@@ -6,6 +6,7 @@ var froggerGame = function() {
   var self = this;
   this.frog = undefined;
   this.log = [];
+  this.taxi = [];
   this.updateInterval = undefined;
   var level = undefined;
 
@@ -13,19 +14,25 @@ var froggerGame = function() {
   this.update = function() {
     self.frog.update();
     self.log.forEach((log)=>log.update());
+    self.taxi.forEach((taxi)=>taxi.update());
   }
 
   //initialize
   this.initialize = function(level) {
 
     self.frog = new frog(0,0);
-    self.log.push(new log(-240, 270 + 30, 3 * level));
-    self.log.push(new log(0,    210 + 30, -3 * level));
-    self.log.push(new log(450,  150 + 30, 3*level));
 
-    self.log.push(new log(-240 + 600,   270 + 30, 3*level));
-    self.log.push(new log(0 + 600,      210 + 30, -3*level));
-    self.log.push(new log(450 + 600,    150 + 30, 3*level));
+    self.log.push(new log(-240, 270 + 30, 5*level));
+    self.log.push(new log(0,    210 + 30, -5*level));
+    self.log.push(new log(450,  150 + 30, 5*level));
+
+    self.log.push(new log(-240 + 600,   270 + 30, 5*level));
+    self.log.push(new log(0 + 600,      210 + 30, -5*level));
+    self.log.push(new log(450 + 600,    150 + 30, 5*level));
+
+    self.taxi.push(new taxi(-240, 450 + 30, 5*level))
+    self.taxi.push(new taxi(0, 510 + 30, -5*level))
+    self.taxi.push(new taxi(-240, 570 + 30, 5*level))
 
 
 
@@ -138,6 +145,46 @@ var log = function (x,y,speedVector){
     }
     this.initialize=function(){
         this.obj=$('<div class="log"></div>').appendTo('.gameboard');
+        this.update();
+    }
+    this.initialize();
+}
+
+
+
+
+
+//taxi class
+var taxi = function (x,y,speedVector){
+    var self = this;
+    this.xPos = x;
+    this.yPos = y;
+    this.speedVector = speedVector;
+    this.length = 120;
+    this.obj=undefined;
+    this.update = function(){
+
+        this.move();
+
+        if(self.xPos < -this.length) {
+            self.xPos = gameBoardWidth;
+        }
+
+        if(self.xPos > gameBoardWidth) {
+            self.xPos = -this.length;
+        }
+
+        this.obj.css("left",self.xPos+"px");
+        this.obj.css("top",self.yPos+"px");
+        console.log(self.xPos);
+        console.log(self.yPos);
+    }   
+
+    this.move = function(){
+        this.xPos += this.speedVector;
+    }
+    this.initialize=function(){
+        this.obj=$('<div class="taxi"></div>').appendTo('.gameboard');
         this.update();
     }
     this.initialize();
